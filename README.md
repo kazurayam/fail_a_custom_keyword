@@ -154,5 +154,11 @@ com.kms.katalon.core.exception.StepFailedException: >>> Intentional failure. Cal
 	at sub - STOP_ON_FAILURE.run(sub - STOP_ON_FAILURE:5)
 ```
 
-Here I could see:
-- The `try-catch` block in the caller is expected to catch the StepFailedException raised by the callee test case, but it does not. Rather the test case entirely failed and the full stack trace was printed in the log.
+## Conclusion
+
+In the above message of "Reproduce behavior", I could see:
+- the `try-catch` block in the caller is expected to catch the StepFailedException raised by the callee test case, but it does not.
+- rather the test case entirely failed
+- the full stack trace was printed in the log
+
+I could reproduce the problem reported by ["CallTestCase using in try-catch block throws StepFailedException"](https://github.com/katalon-studio/katalon-studio/issues/79).
