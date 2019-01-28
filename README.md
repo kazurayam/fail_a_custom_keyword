@@ -112,7 +112,7 @@ Reason: com.kms.katalon.core.exception.StepFailedException:
 ```
 >>I expected to see a message of ">>> callTestCase() failed but Caller continued as FailureHandling.CONTINUE_ON_FAILURE specified" here. But actually I could not see it. I think `Test Cases/caller - CONTINUE_ON_FAILURE` should not throw a StepFailedException but it actually does. I think it is a bug in Katalon Stdudio 5.10.1.
 
-[`Test Cases/caller - STOP_ON_FAILURE`](Scripts/caller - STOP_ON_FAILURE/Script1548640769956.groovy) will emit messages is similar to `Test Cases/caller - CONTINUE_ON_FAILURE`
+[`Test Cases/caller - STOP_ON_FAILURE`](Scripts/caller%20-%20STOP_ON_FAILURE/Script1548640769956.groovy) will emit messages is similar to `Test Cases/caller - CONTINUE_ON_FAILURE`
 
 ### Reproducing the problem of `try-catch`
 
