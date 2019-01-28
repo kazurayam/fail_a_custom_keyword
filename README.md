@@ -116,7 +116,7 @@ Reason: com.kms.katalon.core.exception.StepFailedException:
 
 ### Reproducing the problem of `try-catch`
 
-I made a test case [`Test Cases/caller with try - STOP_ON_FAILURE`](Scripts/caller with try - STOP_ON_FAILURE/Script1548642900086.groovy)
+I made a test case [`Test Cases/caller with try - STOP_ON_FAILURE`](Scripts/caller%20with%20try%20-%20STOP_ON_FAILURE/Script1548642900086.groovy)
 ```
 import static com.kms.katalon.core.testcase.TestCaseFactory.findTestCase
 
