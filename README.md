@@ -162,3 +162,5 @@ In the above message of "Reproduce behavior", I could see:
 - the full stack trace was printed in the log
 
 I could reproduce the problem reported by ["CallTestCase using in try-catch block throws StepFailedException"](https://github.com/katalon-studio/katalon-studio/issues/79).
+
+My custom keyword `fail()` greatly simplified the test cases for investigation.
