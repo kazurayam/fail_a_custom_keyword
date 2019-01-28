@@ -61,8 +61,8 @@ A long list of test cases. But I want to make my test case codes concise.
 ## Solution
 
 I should develop a new custom keyword, namely `fail()`, which encapsulate the detail behavior.
-- to log failure or not
-- to throw exeption or not
+- to log as info or as failure
+- to throw exception or not
 
 ## Description
 
