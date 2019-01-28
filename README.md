@@ -108,8 +108,8 @@ How it works?
 
 1. `fail` does no more than emiting the given message into the Katalon Log
 2. if `FailureHandling.OPTIONAL` is specified as the 2nd arg, it emits the given message as Info. That's all. It works just like `WebUI.comment`.  
-3. if `FailureHandling.CONTINUE_ON_FAILURE` is specified as the 2nd arg, it emits the message and further stack trace message, but does **NOT** throw any StepFailedException.
-4. if `FailureHandling.STOP_ON_FAILURE` is specified as the 2nd arg, it emits the message and further stack trace message, and throw new StepFailedExcption which is raised up to the caller
+3. if `FailureHandling.CONTINUE_ON_FAILURE` is specified as the 2nd arg, it emits the message as failure plus further stack trace message, but does **NOT** throw any StepFailedException.
+4. if `FailureHandling.STOP_ON_FAILURE` is specified as the 2nd arg, it emits the message as failure plus further stack trace message, and throw new StepFailedExcption which is raised up to the caller
 
 Let's try to see.
 
