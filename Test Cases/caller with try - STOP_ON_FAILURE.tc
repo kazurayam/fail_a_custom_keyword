@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description></description>
+   <name>caller with try - STOP_ON_FAILURE</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>1fdbe55a-7852-4bc9-9505-402e7b9a1c8e</testCaseGuid>
+</TestCaseEntity>
