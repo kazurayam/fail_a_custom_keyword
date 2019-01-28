@@ -155,4 +155,4 @@ com.kms.katalon.core.exception.StepFailedException: >>> Intentional failure. Cal
 ```
 
 Here I could see:
-- *The `try-catch` block i the caller is expected to catch the StepFailedException raised by the callee test case, but it does not*. Rather the test case entirely failed and the full stack trace was printed in the log.
+- The `try-catch` block in the caller is expected to catch the StepFailedException raised by the callee test case, but it does not. Rather the test case entirely failed and the full stack trace was printed in the log.
