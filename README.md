@@ -24,24 +24,44 @@ duyluong, a Katalon Developer, made an issue
 
 I was not aware of the reported problem. **I wanted to reproduce the problem on my PC**.
 
-I made a *main* test case like this:
+I made a *main* test case like the following psuedo code:
 ```
-...
-```
-
-And I a *sub* test case named `sub - STOP_ON_FAILURE`, which is called the *main*, like this:
-```
-...
+try {
+    WebUI.callTestCase(findTestCase('sub'), [:])
+} catch (Exception ex) {}
 ```
 
-The `fail` keyword is my custom keyword. I will describe it later.
+And I a *sub* test case named `sub`, which is called the *main*, like the following psuedo code:
+```
+import com.kms.katalon.core.util.KeywordUtil
+KeywordUtil.markFailureAndStop("so long")
+```
+
+**Expected behavior**:
 
 The *main* test case is expected to pass. Even if the *sub* test case failed and threw StepFailedException, the `try` block in the *main* is expected to catch it.
 
-However the [issue](https://github.com/katalon-studio/katalon-studio/issues/79) reports that KS 5.10.1 will actually behave different. The *main* test case fails in KS 5.10.1. Even if the *sub* test case failed and threw StepFailedException, the `try` block in the *main* will FAIL to catch it in KS 5.10.1.
+**Actual behavior to be preproduced**:
 
-###
+The [issue](https://github.com/katalon-studio/katalon-studio/issues/79) reports that KS 5.10.1 will actually behave different. The *main* test case will actually fail in KS 5.10.1. When the *sub* test case threw StepFailedException, the `try` block in the *main* is unable to catch it.
+
+### a custom keyword that always fail
+
+I wanted to create a comprehensive suite of test cases, which should include:
+1. a caller that calls a sub test case without `try-catch` block; the sub test case *does not* log failure, *does not* throw `StepFailedException`.
+2. a caller that calls a sub test case without `try-catch` block; the sub test case **does** log failure, but does not throw `StepFailedException`.
+3. a caller that calls a sub test case without `try-catch` block; the sub test case **does** log failure, and **does** throw `StepFailedException`.
+4. a caller that calls a sub test case **with** `try-catch` block; the sub test case does not log failure, does not throw `StepFailedException`.
+5. a caller that calls a sub test case **with** `try-catch` block; the sub test case does log failure, but does not throw `StepFailedException`.
+6. a caller that calls a sub test case **with** `try-catch` block; the sub test case does log failure, and does throw `StepFailedException`.
+
+A long list of test cases. I wanted to make my test case code concise. I needed a custom keyword which enables me to express those cases in 1 line of code per each 6 cases above.
 
 ## Solution
 
 ## Description
+
+### a primiteve keyword: fail
+
+
+###
