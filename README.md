@@ -56,9 +56,13 @@ In order to investigate the reported issue, I wanted to create a comprehensive s
 5. a caller that calls a sub test case **with** `try-catch` block; the sub test case does log failure, but does not throw `StepFailedException`.
 6. a caller that calls a sub test case **with** `try-catch` block; the sub test case does log failure, and does throw `StepFailedException`.
 
-A long list of test cases. I wanted to make my test case codes concise. Therefore I needed a custom keyword which enables me to encapsulate the detail behavior (to log failure or not; to throw exeption or not;) in 1 line of code per each 6 test cases above.
+A long list of test cases. But I want to make my test case codes concise.
 
 ## Solution
+
+I should develop a new custom keyword, namely `fail()`, which encapsulate the detail behavior.
+- to log failure or not
+- to throw exeption or not
 
 ## Description
 
