@@ -26,7 +26,7 @@ public class PrimitiveKeywords {
 				break
 			case FailureHandling.STOP_ON_FAILURE:
 				KeywordUtil.markFailedAndStop(message)
+				break
 		}
 	}
-	
 }

@@ -55,13 +55,103 @@ I wanted to create a comprehensive suite of test cases, which should include:
 5. a caller that calls a sub test case **with** `try-catch` block; the sub test case does log failure, but does not throw `StepFailedException`.
 6. a caller that calls a sub test case **with** `try-catch` block; the sub test case does log failure, and does throw `StepFailedException`.
 
-A long list of test cases. I wanted to make my test case code concise. I needed a custom keyword which enables me to express those cases in 1 line of code per each 6 cases above.
+A long list of test cases. I wanted to make my test case code concise. Therefore I needed a custom keyword which enables me to encapsulate the detail behavior (to log failure or not; to throw exeption or not;) in 1 line of code per each 6 test cases above.
 
 ## Solution
 
 ## Description
 
-### a primiteve keyword: fail
+### a primitive keyword: fail
 
+I made a custom keyword  [`com.kazurayam.ksbackyard.PrimitiveKeywords#fail`](Keywords/com/kazurayam/ksbackyard/PrimitiveKeywords.groovy):
+```
+@Keyword
+static void fail(String message, FailureHandling flowControl)
+        throws StepFailedException {
+    switch (flowControl) {
+        case FailureHandling.OPTIONAL:
+            KeywordUtil.logInfo(message)
+            break
+        case FailureHandling.CONTINUE_ON_FAILURE:
+            KeywordUtil.markFailed(message)
+            break
+        case FailureHandling.STOP_ON_FAILURE:
+            KeywordUtil.markFailedAndStop(message)
+            break
+    }
+```
 
-###
+How it works?
+
+1. `fail` does no more than emiting the given message into the Katalon Log, just like `WebUI.comment` does.  
+2. if `FailureHandling.CONTINUE_ON_FAILURE` is specified as the 2nd arg, it emits further stack trace message, but does **NOT** throw any StepFailedException.
+3. if `FailureHandling.STOP_ON_FAILURE` is specified as the 2nd arg, it emits further stack trace message, and throw new StepFailedExcption which is raised up to the caller
+
+Let's try to see.
+
+[`Test Cases/caller - OPTIONAL`](Scripts/caller - OPTIONAL/Script1548640756567.groovy) will emit messages as follows:
+```
+>>> Intentional failure. Caller can safely ignore this
+...
+>>> callTestCase() failed but we ignored it as FailureHandling.OPTIONAL specfied
+```
+
+[`Test Cases/caller - CONTINUE_ON_FAILURE`](Scripts/caller - CONTINUE_ON_FAILURE/Script1548640743447.groovy) will emit messages as follows:
+```
+2019-01-28 15:04:17.961 ERROR c.k.katalon.core.main.TestCaseExecutor   - ❌ com.kazurayam.ksbackyard.PrimitiveKeywords.fail(message, CONTINUE_ON_FAILURE) FAILED.
+Reason: com.kms.katalon.core.exception.StepFailedException:
+>>> Intentional failure. Caller can continue
+	at com.kms.katalon.core.util.KeywordUtil.markFailed(KeywordUtil.java:18)
+	at com.kms.katalon.core.util.KeywordUtil$markFailed.call(Unknown Source)
+	at com.kazurayam.ksbackyard.PrimitiveKeywords.fail(PrimitiveKeywords.groovy:25)
+	at com.kazurayam.ksbackyard.PrimitiveKeywords.invokeMethod(PrimitiveKeywords.groovy)
+	at com.kms.katalon.core.main.CustomKeywordDelegatingMetaClass.invokeStaticMethod(CustomKeywordDelegatingMetaClass.java:49)
+	at sub - CONTINUE_ON_FAILURE.run(sub - CONTINUE_ON_FAILURE:3)
+...
+```
+>>I expected to see a message of ">>> callTestCase() failed but Caller continued as FailureHandling.CONTINUE_ON_FAILURE specified" here. But actually I could not see it. I think `Test Cases/caller - CONTINUE_ON_FAILURE` should not throw a StepFailedException but it actually does. I think it is a bug in Katalon Stdudio 5.10.1.
+
+[`Test Cases/caller - STOP_ON_FAILURE`](Scripts/caller - STOP_ON_FAILURE/Script1548640769956.groovy) will emit messages is similar to `Test Cases/caller - CONTINUE_ON_FAILURE`
+
+### Reproducing the problem of `try-catch`
+
+I made a test case [`Test Cases/caller with try - STOP_ON_FAILURE`](Scripts/caller with try - STOP_ON_FAILURE/Script1548642900086.groovy)
+```
+import static com.kms.katalon.core.testcase.TestCaseFactory.findTestCase
+
+import com.kms.katalon.core.webui.keyword.WebUiBuiltInKeywords as WebUI
+
+try {
+	WebUI.callTestCase(findTestCase('sub - STOP_ON_FAILURE'),
+		["message":">>> Intentional failure. Caller should stop immediately"])
+
+	WebUI.comment(">>> callTestCase() failed")
+	WebUI.comment(">>> but you will not seed this message")
+} catch (Exception ex) {
+	WebUI.comment(">>> caught an Exception: " + ex.getMessage())
+}
+```
+
+**Expected behavior**
+```
+>>> Internal failure. Caller should stop immediately
+...
+>>> caught an Exception: ...
+```
+
+**Reproduced behavior**
+```
+2019-01-28 15:27:15.420 ERROR k.k.c.m.CustomKeywordDelegatingMetaClass - ❌ >>> Intentional failure. Caller should stop immediately
+2019-01-28 15:27:15.439 ERROR c.k.katalon.core.main.TestCaseExecutor   - ❌ com.kazurayam.ksbackyard.PrimitiveKeywords.fail(message, STOP_ON_FAILURE) FAILED.
+Reason:
+com.kms.katalon.core.exception.StepFailedException: >>> Intentional failure. Caller should stop immediately
+	at com.kms.katalon.core.util.KeywordUtil.markFailedAndStop(KeywordUtil.java:27)
+	at com.kms.katalon.core.util.KeywordUtil$markFailedAndStop.call(Unknown Source)
+	at com.kazurayam.ksbackyard.PrimitiveKeywords.fail(PrimitiveKeywords.groovy:28)
+	at com.kazurayam.ksbackyard.PrimitiveKeywords.invokeMethod(PrimitiveKeywords.groovy)
+	at com.kms.katalon.core.main.CustomKeywordDelegatingMetaClass.invokeStaticMethod(CustomKeywordDelegatingMetaClass.java:49)
+	at sub - STOP_ON_FAILURE.run(sub - STOP_ON_FAILURE:5)
+```
+
+Here I could see:
+- *The `try-catch` block i the caller is expected to catch the StepFailedException raised by the callee test case, but it does not*. Rather the test case entirely failed and the full stack trace was printed in the log.
