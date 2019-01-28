@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Project>
    <description></description>
-   <name>fail_a_custom_keyword</name>
+   <name>fail_a_primitive_keyword</name>
    <tag></tag>
    <UUID>ca24c9ca-43db-4b42-8b92-acab2447bed5</UUID>
    <migratedVersion>5.9.0</migratedVersion>
