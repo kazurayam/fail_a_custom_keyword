@@ -22,16 +22,14 @@ duyluong, a Katalon Developer, made an issue
 >Actual result:
 >If users use callTestCase in try-catch block, KS throws StepFailedException and marks the main test case failed.
 
-I was not aware of the reported problem. **I wanted to reproduce the problem on my PC**.
-
-I made a *main* test case like the following psuedo code:
+I was not aware of the reported problem. I wanted to reproduce the problem on my PC. I made a *main* test case like the following psuedo code:
 ```
 try {
     WebUI.callTestCase(findTestCase('sub'), [:])
 } catch (Exception ex) {}
 ```
 
-And I a *sub* test case named `sub`, which is called the *main*, like the following psuedo code:
+And I a test case named `sub`, which is called the *main*, like the following psuedo code:
 ```
 import com.kms.katalon.core.util.KeywordUtil
 KeywordUtil.markFailureAndStop("so long")
@@ -45,9 +43,12 @@ The *main* test case is expected to pass. Even if the *sub* test case failed and
 
 The [issue](https://github.com/katalon-studio/katalon-studio/issues/79) reports that KS 5.10.1 will actually behave different. The *main* test case will actually fail in KS 5.10.1. When the *sub* test case threw StepFailedException, the `try` block in the *main* is unable to catch it.
 
+I want to witness the behavior.
+
 ### a custom keyword that always fail
 
-I wanted to create a comprehensive suite of test cases, which should include:
+In order to investigate the reported issue, I wanted to create a comprehensive suite of test cases, which should include:
+
 1. a caller that calls a sub test case without `try-catch` block; the sub test case *does not* log failure, *does not* throw `StepFailedException`.
 2. a caller that calls a sub test case without `try-catch` block; the sub test case **does** log failure, but does not throw `StepFailedException`.
 3. a caller that calls a sub test case without `try-catch` block; the sub test case **does** log failure, and **does** throw `StepFailedException`.
@@ -55,7 +56,7 @@ I wanted to create a comprehensive suite of test cases, which should include:
 5. a caller that calls a sub test case **with** `try-catch` block; the sub test case does log failure, but does not throw `StepFailedException`.
 6. a caller that calls a sub test case **with** `try-catch` block; the sub test case does log failure, and does throw `StepFailedException`.
 
-A long list of test cases. I wanted to make my test case code concise. Therefore I needed a custom keyword which enables me to encapsulate the detail behavior (to log failure or not; to throw exeption or not;) in 1 line of code per each 6 test cases above.
+A long list of test cases. I wanted to make my test case codes concise. Therefore I needed a custom keyword which enables me to encapsulate the detail behavior (to log failure or not; to throw exeption or not;) in 1 line of code per each 6 test cases above.
 
 ## Solution
 
@@ -89,14 +90,14 @@ How it works?
 
 Let's try to see.
 
-[`Test Cases/caller - OPTIONAL`](Scripts/caller - OPTIONAL/Script1548640756567.groovy) will emit messages as follows:
+When I run [`Test Cases/caller - OPTIONAL`](Scripts/caller%20-%20OPTIONAL/Script1548640756567.groovy), it will emit messages as follows:
 ```
 >>> Intentional failure. Caller can safely ignore this
 ...
 >>> callTestCase() failed but we ignored it as FailureHandling.OPTIONAL specfied
 ```
 
-[`Test Cases/caller - CONTINUE_ON_FAILURE`](Scripts/caller - CONTINUE_ON_FAILURE/Script1548640743447.groovy) will emit messages as follows:
+When I run [`Test Cases/caller - CONTINUE_ON_FAILURE`](Scripts/caller%20-%20CONTINUE_ON_FAILURE/Script1548640743447.groovy), it will emit messages as follows:
 ```
 2019-01-28 15:04:17.961 ERROR c.k.katalon.core.main.TestCaseExecutor   - ❌ com.kazurayam.ksbackyard.PrimitiveKeywords.fail(message, CONTINUE_ON_FAILURE) FAILED.
 Reason: com.kms.katalon.core.exception.StepFailedException:
