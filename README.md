@@ -195,11 +195,11 @@ My custom keyword `fail()` greatly simplified the test cases for investigation.
 At https://forum.katalon.com/t/how-to-stop-test-case-in-catch-block/18291/13, duyluon, a Katalon Developer, informed that Katalon Studio v6.0.5 fixed the issue "unable to catch StepFailedException". He asked use to check the fix ourselves.
 
 I used KS v6.1.0 and ran [this project](https://github.com/kazurayam/fail_a_primitive_keyword). I ran the following 2 test cases:
-- [Test Cases/caller with try - CONTINUE_ON_FAILURE](Scripts/caller with try - CONTINUE_ON_FAILURE/Script1548642675476.groovy)
-- [Test Cases/caller with try - STOP_ON_FAILURE](Scripts/caller with try - STOP_ON_FAILURE/Script1548642900086.groovy)
+- [Test Cases/caller with try - CONTINUE_ON_FAILURE](Scripts/caller%20with%20try%20-%20CONTINUE_ON_FAILURE/Script1548642675476.groovy)
+- [Test Cases/caller with try - STOP_ON_FAILURE](Scripts/caller%20with%20try%20-%20STOP_ON_FAILURE/Script1548642900086.groovy)
 
 I expected to see
-1. StepFailedException is thrown by my custom keyword [Fail](Scripts/caller with try - STOP_ON_FAILURE/Script1548642900086.groovy)
+1. StepFailedException is thrown by my custom keyword [Fail](Keywords/com/kazurayam/ksbackyard/PrimitiveKeywords.groovy)
 2. The test cases catch the exception, and the test cases PASSES in the end.
 
 I ran the test cases. They ran as I expected.
